@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-from matilda import input_options, units, lib_fc
+from matilda import input_options, units, lib_fc, matilda_header
 
 class fc_options(input_options.write_options):
     def fc_input(self):
         """
-        Basic input for Franck-Condon simulations.
+        Input for Franck-Condon simulations.
         """
         self.choose_list(
             "Select mode:",
@@ -18,6 +18,9 @@ class fc_options(input_options.write_options):
         self.read_float("w_min(in cm^-1): ", "w_min", 200)
 
     def run_fc(self):
+        """
+        Run Franck-Condon simulations.
+        """
         print("\nRunning FC simulation")
 
         E_0_cm = self['dEH'] * units.energy['rcm']
@@ -27,6 +30,8 @@ class fc_options(input_options.write_options):
         # lib_fc.build_spectrum(...)
 
 if __name__=='__main__':
+    matilda_header.print_header('FCmini - Franck-Condon simulations')
+
     fco = fc_options('fc.in')
     fco.fc_input()
     fco.run_fc()
