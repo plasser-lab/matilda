@@ -15,15 +15,11 @@ class fc_options(input_options.write_options):
     def fc_input(self):
         
         self.choose_list("Select mode:", "abs_emi", [ (1, "Absorption"), (2, "Emission")], 1)
-       
-        #self.abs_emi = self["abs_emi"]
-
         self.read_float("Electronic adiabatic energy (in Hartree): ", "dEH", 1.0)
         self.read_float("Oscillator strength (dimensionless): ", "f", 1.0)
         self.read_float("w_min(in cm^-1): ", "w_min", 200.0)
         self.read_float("S_min: ", "S_min", 0.1)
         self.read_yn("Show stick spectrum overlay", "plot_sticks", False)
-
         self.read_float("Number of points in spectrum", "npoints", 2000)
     
         if self["abs_emi"] == 1:
