@@ -68,13 +68,11 @@ class HRData:
         self.E_0_cm = self.fc_options["dEH"] * units.energy['rcm']
     
         print()
-        print(f'Mode: {self.fc_options["abs_emi"]}')
         print(f'Using modes with omega > {self.fc_options["w_min"]:.4f} cm^-1 and S > {self.fc_options["S_min"]:.4f} as FC-active modes.')
         print(f"Number of active modes : {len(self.FC_modes)}")
         print(f"Number of sigma modes  : {len(self.sig_modes)}")
         print(f"Computed gaussian sigma: {self.sigma:.4f} cm^-1")
         print(f"The adiabatic energy is {self.E_0_cm:.4f} cm^-1")
-
 
     def compute_k_max(self):
         self.k_max = int(max(S + 5.0 * math.sqrt(S) for S, _ in self.FC_modes))
@@ -86,10 +84,10 @@ class HRData:
         fc_width = sum(S * omega for S, omega in self.FC_modes)
 
         if self.fc_options["abs_emi"] == 2:   
-            E_min = self.E_0_cm - 10000.0
-            E_max = self.E_0_cm + 10000.0
-            #E_min = E_0_cm - fc_width - 20*sigma
-            #E_max = E_0_cm + 10*sigma
+            #E_min = self.E_0_cm - 10000.0
+            #E_max = self.E_0_cm + 10000.0
+            E_min = self.E_0_cm - fc_width - 50.0 * self.sigma
+            E_max = self.E_0_cm + 10.0 * self.sigma
         else:
             E_min = self.E_0_cm - 5.0 * self.sigma
             E_max = self.E_0_cm + fc_width + 50.0 * self.sigma
@@ -123,7 +121,7 @@ class HRData:
             S, omega = self.FC_modes[idx]                                       #for current mode unpacks s and omega
             for k in range(self.k_max + 1):                                  #loops over no of quanta k in this mode from 0 up to k_max inclusive
                 new_intensity = intensity * (S**k) / math.factorial(k)  #poisson-like weight factor is multiplied by intensity accumulated so far from previous modes. updates intenisty for choosing k quanta in this mode
-                if self.fc_options["abs_emi"] == "2":                                  #updates energy shift depending on emi or abs
+                if self.fc_options["abs_emi"] == 2:                                  #updates energy shift depending on emi or abs
                     new_Eshift = E_shift - k * omega
                 else:
                     new_Eshift = E_shift + k * omega
@@ -163,9 +161,11 @@ class HRData:
 
         stick_intensities_normalised = numpy.array(self.stick_intensities) / max(self.stick_intensities)
         stick_wavelengths = 1e7 / numpy.array(self.stick_energies)
-        stick_ev = numpy.array(self.stick_energies) /8065.54
+        stick_evolts = numpy.array(self.stick_energies) /8065.54
 
         xlim_cm = (float(self.energy_grid.min()), float(self.energy_grid.max()))
+        xlim_nm = (float(wavelength_grid.min()), float(wavelength_grid.max()))
+        xlim_ev = (float(electronvolts_grid.min()), float(electronvolts_grid.max()))
 
         #Emission
         if self.fc_options["abs_emi"] == 2:
@@ -173,24 +173,25 @@ class HRData:
             Lamda = 1e9 /ein_coeff_emi
 
             self.spectrum /= self.spectrum.max()
-            
 
             print("\nLineshapes are ignored")
             print(f"Einstein Coefficient of Spontaneous Emission (A): {ein_coeff_emi:.6e}s^-1")
             print(f"Excited state lifetime Tau:{Lamda:.6e} ns")
 
             write_table("vibronic_emission_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [self.energy_grid, wavelength_grid, electronvolts_grid, self.spectrum],)
-            print("\nEmision spectrum saved to 'vibronic_emission_data.txt'")
+            print("\nEmission spectrum saved to 'vibronic_emission_data.txt'")
 
-            write_table("vibronic_emi_stick_data.txt", "Wavenumber(cm^-1)  Wavelength(nm)   Electronvolts(eV)   Intensity(normalised)", [self.stick_energies, stick_wavelengths, stick_ev, self.stick_intensities],)
-            print("Stick spectrum saved to vibronic_emi_stick_data.txt'")
+            if plot_sticks:
+                write_table("vibronic_emi_stick_data.txt", "Wavenumber(cm^-1)  Wavelength(nm)   Electronvolts(eV)   Intensity(normalised)", [self.stick_energies, stick_wavelengths, stick_evolts, self.stick_intensities],)
+                print("Stick spectrum saved to vibronic_emi_stick_data.txt'")
             
-            sticks = (self.stick_energies, stick_intensities_normalised) if plot_sticks else None
-            # print(self.stick_energies)
-            print(stick_intensities_normalised)
-            plot_and_save(self.energy_grid, self.spectrum, "Wavenumber (cm$^{-1}$)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum", "vibronic_emission.png", color="darkred", sticks=sticks, xlim=xlim_cm,)
-            plot_and_save(wavelength_grid, self.spectrum, "Wavelength (nm)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Wavelength)", "vibronic_emission_nm.png", color="orange",)
-            plot_and_save(electronvolts_grid, self.spectrum, "Electronvolts (eV)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Electronvolts)", "vibronic_emission_ev.png", color="blue",)
+            sticks_cm = (self.stick_energies, stick_intensities_normalised) if plot_sticks else None
+            sticks_nm = (stick_wavelengths, stick_intensities_normalised) if plot_sticks else None
+            sticks_ev = (stick_evolts, stick_intensities_normalised) if plot_sticks else None
+
+            plot_and_save(self.energy_grid, self.spectrum, "Wavenumber (cm$^{-1}$)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum", "vibronic_emission.png", color="darkred", sticks=sticks_cm, xlim=xlim_cm,)
+            plot_and_save(wavelength_grid, self.spectrum, "Wavelength (nm)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Wavelength)", "vibronic_emission_nm.png", color="orange", sticks=sticks_nm, xlim=xlim_nm)
+            plot_and_save(electronvolts_grid, self.spectrum, "Electronvolts (eV)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Electronvolts)", "vibronic_emission_ev.png", color="deeppink", sticks=sticks_ev, xlim=xlim_ev)
         
         #Absorption
         else:
@@ -200,13 +201,13 @@ class HRData:
             print(f"B: {ein_coeff_abs:.6e} s gm^-1")
 
             cross_sec_constant = (100 * units.constants['h'])/(units.mass['kg'] * units.constants['c'] * (8 * math.pi)**0.5 * units.constants['c0'])
-            cross_sec_sigma = cross_sec_constant * self.fc_options["f"] / self.sigma
+            cross_sec_sigma = cross_sec_constant * self.fc_options["f"] / self.sigma * 1e16
             epsilon_prefactor = cross_sec_sigma * units.constants['Nl'] / math.log(10)
 
             if self.fc_options["use_omega_omegaI0"]:
                 print("\nAssuming omega/omega_I0 = 1 (sharp lineshape approximation).")
                 print("The absorption cross section has uniform scaling across the spectrum.")
-                print(f"\nCharacteristic peak absorption cross section: {cross_sec_sigma:.6e} cm^2")
+                print(f"\nCharacteristic peak absorption cross section: {cross_sec_sigma:.6e} A^2")
                 epsilon_spectrum = epsilon_prefactor * self.spectrum
 
             else:            
@@ -222,14 +223,18 @@ No single fixed peak formula applies.""")
             write_table("vibronic_spectrum_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Molar Extinction Coefficients(M^-1 cm^-1)", [self.energy_grid, wavelength_grid, electronvolts_grid, epsilon_spectrum],)
             print("\nAbsorption spectrum saved to 'vibronic_spectrum_data.txt'")
 
-            write_table("vibronic_abs_stick_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [self.stick_energies, stick_wavelengths, stick_ev, self.stick_intensities],)
-            print("Stick spectrum saved to 'vibronic_abs_stick_data.txt'")
+            if plot_sticks:
+                write_table("vibronic_abs_stick_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [self.stick_energies, stick_wavelengths, stick_evolts, self.stick_intensities],)
+                print("Stick spectrum saved to 'vibronic_abs_stick_data.txt'")
 
-            sticks = (self.stick_energies, numpy.array(stick_intensities_normalised) * numpy.max(epsilon_spectrum)) if plot_sticks else None
-            
-            plot_and_save(self.energy_grid, epsilon_spectrum, "Wavenumber (cm$^{-1}$)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum", "vibronic_spectrum.png", color="darkgreen", sticks=sticks, xlim=xlim_cm,)
-            plot_and_save(wavelength_grid, epsilon_spectrum, "Wavelength (nm)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Wavelength)", "vibronic_spectrum_nm.png", color="purple",)
-            plot_and_save(electronvolts_grid, epsilon_spectrum, "Electronvolts (eV)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Electronvolts)", "vibronic_spectrum_ev.png", color="brown",)
+            stick_y = numpy.array(stick_intensities_normalised) * numpy.max(epsilon_spectrum)
+            sticks_cm = (self.stick_energies, stick_y) if plot_sticks else None
+            sticks_nm = (stick_wavelengths, stick_y) if plot_sticks else None
+            sticks_ev = (stick_evolts, stick_y) if plot_sticks else None
+
+            plot_and_save(self.energy_grid, epsilon_spectrum, "Wavenumber (cm$^{-1}$)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum", "vibronic_spectrum.png", color="darkgreen", sticks=sticks_cm, xlim=xlim_cm,)
+            plot_and_save(wavelength_grid, epsilon_spectrum, "Wavelength (nm)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Wavelength)", "vibronic_spectrum_nm.png", color="purple", sticks=sticks_nm, xlim=xlim_nm)
+            plot_and_save(electronvolts_grid, epsilon_spectrum, "Electronvolts (eV)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Electronvolts)", "vibronic_spectrum_ev.png", color="brown", sticks=sticks_ev, xlim=xlim_ev)
 
 
     def run_plot(self):
