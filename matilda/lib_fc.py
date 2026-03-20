@@ -43,7 +43,7 @@ class HRData:
             self.S_factors.append(S)
 
         if not self.freqs_cm or not self.S_factors:
-            raise error_handler.MsgError("Error: No valid data found in Huang Rhys data file")
+            raise error_handler.MsgError("Error: No valid data found in Huang-Rhys data file")
 
     def classify_modes(self):
         """
@@ -174,16 +174,16 @@ class HRData:
 
             self.spectrum /= self.spectrum.max()
 
-            print("\nLineshapes are ignored")
-            print(f"Einstein Coefficient of Spontaneous Emission (A): {ein_coeff_emi:.6e}s^-1")
-            print(f"Excited state lifetime Tau:{Lamda:.6e} ns")
+            print("\nLineshapes are ignored.")
+            print(f"Einstein coefficient of spontaneous emission (A): {ein_coeff_emi:.6e} s^-1")
+            print(f"Excited state lifetime: {Lamda:.6e} ns")
 
             write_table("vibronic_emission_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [self.energy_grid, wavelength_grid, electronvolts_grid, self.spectrum],)
-            print("\nEmission spectrum saved to 'vibronic_emission_data.txt'")
+            print("\nEmission spectrum data saved to 'vibronic_emission_data.txt'")
 
             if plot_sticks:
                 write_table("vibronic_emi_stick_data.txt", "Wavenumber(cm^-1)  Wavelength(nm)   Electronvolts(eV)   Intensity(normalised)", [self.stick_energies, stick_wavelengths, stick_evolts, self.stick_intensities],)
-                print("Stick spectrum saved to vibronic_emi_stick_data.txt'")
+                print("Stick spectrum data saved to vibronic_emi_stick_data.txt'")
             
             sticks_cm = (self.stick_energies, stick_intensities_normalised) if plot_sticks else None
             sticks_nm = (stick_wavelengths, stick_intensities_normalised) if plot_sticks else None
@@ -197,8 +197,8 @@ class HRData:
         else:
             ein_coeff_abs = (math.pi / (1000 * units.mass["kg"] * 100 * units.constants["c"] * units.constants["c0"]) * self.fc_options["f"] / self.E_0_cm)
             
-            print("\nLineshapes are ignored and, in the electric dipole approximation we can obtain Einstein coefficient of absorption (B).")
-            print(f"B: {ein_coeff_abs:.6e} s gm^-1")
+            print("\nLineshapes are ignored.")
+            print(f"Einstein coefficient of absorption (B): {ein_coeff_abs:.6e} s gm^-1")
 
             cross_sec_constant = (100 * units.constants['h'])/(units.mass['kg'] * units.constants['c'] * (8 * math.pi)**0.5 * units.constants['c0'])
             cross_sec_sigma = cross_sec_constant * self.fc_options["f"] / self.sigma * 1e16
@@ -221,11 +221,11 @@ No single fixed peak formula applies.""")
                 epsilon_spectrum = epsilon_prefactor * omega_ratio * self.spectrum
 
             write_table("vibronic_spectrum_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Molar Extinction Coefficients(M^-1 cm^-1)", [self.energy_grid, wavelength_grid, electronvolts_grid, epsilon_spectrum],)
-            print("\nAbsorption spectrum saved to 'vibronic_spectrum_data.txt'")
+            print("\nAbsorption spectrum data saved to 'vibronic_spectrum_data.txt'")
 
             if plot_sticks:
                 write_table("vibronic_abs_stick_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [self.stick_energies, stick_wavelengths, stick_evolts, self.stick_intensities],)
-                print("Stick spectrum saved to 'vibronic_abs_stick_data.txt'")
+                print("Stick spectrum data saved to 'vibronic_abs_stick_data.txt'")
 
             stick_y = numpy.array(stick_intensities_normalised) * numpy.max(epsilon_spectrum)
             sticks_cm = (self.stick_energies, stick_y) if plot_sticks else None
@@ -243,14 +243,3 @@ No single fixed peak formula applies.""")
         self.make_energy_grid()
         self.build_spectrum()
         self.plot_postrun(self.fc_options["plot_sticks"])
-
-
-        
-
-
-
-            
-
-
-
-
