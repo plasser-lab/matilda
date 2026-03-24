@@ -1,11 +1,10 @@
 """
 version 1.0.0
-author: Giulia Woelfle-Conway
+author: Sayan Ghosh, Felix Plasser, Giulia Woelfle-Conway
 usage: Routines for Franck-Condon simulations
 """
 
 import math
-from dataclasses import dataclass
 from typing import Optional
 
 import numpy
@@ -84,8 +83,6 @@ class HRData:
         fc_width = sum(S * omega for S, omega in self.FC_modes)
 
         if self.fc_options["abs_emi"] == 2:   
-            #E_min = self.E_0_cm - 10000.0
-            #E_max = self.E_0_cm + 10000.0
             E_min = self.E_0_cm - fc_width - 50.0 * self.sigma
             E_max = self.E_0_cm + 10.0 * self.sigma
         else:
@@ -120,7 +117,7 @@ class HRData:
                 
             S, omega = self.FC_modes[idx]                                       #for current mode unpacks s and omega
             for k in range(self.k_max + 1):                                  #loops over no of quanta k in this mode from 0 up to k_max inclusive
-                new_intensity = intensity * (S**k) / math.factorial(k)  #poisson-like weight factor is multiplied by intensity accumulated so far from previous modes. updates intenisty for choosing k quanta in this mode
+                new_intensity = intensity * (S**k) / math.factorial(k)  #poisson-like weight factor is multiplied by intensity accumulated from previous modes. updates intenisty for choosing k quanta in this mode
                 if self.fc_options["abs_emi"] == 2:                                  #updates energy shift depending on emi or abs
                     new_Eshift = E_shift - k * omega
                 else:
@@ -139,15 +136,14 @@ class HRData:
                 for row in zip(*cols):
                     fh.write(" ".join(f"{float(v):15.8f}" for v in row) + "\n")
         
-        def plot_and_save(x, y, xlabel, ylabel, title, filename, color, sticks=None, xlim=None,):
+        def plot_and_save(x, y, xlabel, ylabel, title, filename, color, xlim, sticks=None,):
             plt.figure(figsize=(8, 5))
             plt.plot(x, y, color=color, label="Broadened spectrum")
+            plt.xlim(*xlim)
             if sticks is not None:
                 sx, sy = sticks
                 plt.vlines(sx, 0, sy, color="blue", linewidth=1, label="Stick spectrum")
                 plt.legend()
-            if xlim is not None:
-                plt.xlim(*xlim)
             plt.xlabel(xlabel)
             plt.ylabel(ylabel)
             plt.title(title)
@@ -183,22 +179,22 @@ class HRData:
 
             if plot_sticks:
                 write_table("vibronic_emi_stick_data.txt", "Wavenumber(cm^-1)  Wavelength(nm)   Electronvolts(eV)   Intensity(normalised)", [self.stick_energies, stick_wavelengths, stick_evolts, self.stick_intensities],)
-                print("Stick spectrum data saved to vibronic_emi_stick_data.txt'")
+                print("Stick spectrum data saved to 'vibronic_emi_stick_data.txt'")
             
             sticks_cm = (self.stick_energies, stick_intensities_normalised) if plot_sticks else None
             sticks_nm = (stick_wavelengths, stick_intensities_normalised) if plot_sticks else None
             sticks_ev = (stick_evolts, stick_intensities_normalised) if plot_sticks else None
 
-            plot_and_save(self.energy_grid, self.spectrum, "Wavenumber (cm$^{-1}$)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum", "vibronic_emission.png", color="darkred", sticks=sticks_cm, xlim=xlim_cm,)
-            plot_and_save(wavelength_grid, self.spectrum, "Wavelength (nm)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Wavelength)", "vibronic_emission_nm.png", color="orange", sticks=sticks_nm, xlim=xlim_nm)
-            plot_and_save(electronvolts_grid, self.spectrum, "Electronvolts (eV)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Electronvolts)", "vibronic_emission_ev.png", color="deeppink", sticks=sticks_ev, xlim=xlim_ev)
+            plot_and_save(self.energy_grid, self.spectrum, "Wavenumber (cm$^{-1}$)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum", "vibronic_emission.png", color="darkred", xlim=xlim_cm, sticks=sticks_cm,)
+            plot_and_save(wavelength_grid, self.spectrum, "Wavelength (nm)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Wavelength)", "vibronic_emission_nm.png", color="orange", xlim=xlim_nm, sticks=sticks_nm,)
+            plot_and_save(electronvolts_grid, self.spectrum, "Electronvolts (eV)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Electronvolts)", "vibronic_emission_ev.png", color="deeppink",  xlim=xlim_ev, sticks=sticks_ev,)
         
         #Absorption
         else:
             ein_coeff_abs = (math.pi / (1000 * units.mass["kg"] * 100 * units.constants["c"] * units.constants["c0"]) * self.fc_options["f"] / self.E_0_cm)
             
             print("\nLineshapes are ignored.")
-            print(f"Einstein coefficient of absorption (B): {ein_coeff_abs:.6e} s gm^-1")
+            print(f"Einstein coefficient of absorption (B): {ein_coeff_abs:.6e} s g m^-1")
 
             cross_sec_constant = (100 * units.constants['h'])/(units.mass['kg'] * units.constants['c'] * (8 * math.pi)**0.5 * units.constants['c0'])
             cross_sec_sigma = cross_sec_constant * self.fc_options["f"] / self.sigma * 1e16
@@ -220,8 +216,8 @@ No single fixed peak formula applies.""")
                 omega_ratio = self.energy_grid / self.E_0_cm
                 epsilon_spectrum = epsilon_prefactor * omega_ratio * self.spectrum
 
-            write_table("vibronic_spectrum_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Molar Extinction Coefficients(M^-1 cm^-1)", [self.energy_grid, wavelength_grid, electronvolts_grid, epsilon_spectrum],)
-            print("\nAbsorption spectrum data saved to 'vibronic_spectrum_data.txt'")
+            write_table("vibronic_absorption_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Molar Extinction Coefficients(M^-1 cm^-1)", [self.energy_grid, wavelength_grid, electronvolts_grid, epsilon_spectrum],)
+            print("\nAbsorption spectrum data saved to 'vibronic_absorption_data.txt'")
 
             if plot_sticks:
                 write_table("vibronic_abs_stick_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [self.stick_energies, stick_wavelengths, stick_evolts, self.stick_intensities],)
@@ -232,9 +228,9 @@ No single fixed peak formula applies.""")
             sticks_nm = (stick_wavelengths, stick_y) if plot_sticks else None
             sticks_ev = (stick_evolts, stick_y) if plot_sticks else None
 
-            plot_and_save(self.energy_grid, epsilon_spectrum, "Wavenumber (cm$^{-1}$)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum", "vibronic_spectrum.png", color="darkgreen", sticks=sticks_cm, xlim=xlim_cm,)
-            plot_and_save(wavelength_grid, epsilon_spectrum, "Wavelength (nm)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Wavelength)", "vibronic_spectrum_nm.png", color="purple", sticks=sticks_nm, xlim=xlim_nm)
-            plot_and_save(electronvolts_grid, epsilon_spectrum, "Electronvolts (eV)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Electronvolts)", "vibronic_spectrum_ev.png", color="brown", sticks=sticks_ev, xlim=xlim_ev)
+            plot_and_save(self.energy_grid, epsilon_spectrum, "Wavenumber (cm$^{-1}$)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum", "vibronic_absorption.png", color="darkgreen",  xlim=xlim_cm, sticks=sticks_cm,)
+            plot_and_save(wavelength_grid, epsilon_spectrum, "Wavelength (nm)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Wavelength)", "vibronic_absorption_nm.png", color="purple",  xlim=xlim_nm, sticks=sticks_nm,)
+            plot_and_save(electronvolts_grid, epsilon_spectrum, "Electronvolts (eV)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Electronvolts)", "vibronic_absorption_ev.png", color="brown",  xlim=xlim_ev, sticks=sticks_ev,)
 
 
     def run_plot(self):
