@@ -82,9 +82,11 @@ class HRData:
         """    
         fc_width = sum(S * omega for S, omega in self.FC_modes)
 
-        if self.fc_options["abs_emi"] == 2:   
-            E_min = self.E_0_cm - fc_width - 50.0 * self.sigma
-            E_max = self.E_0_cm + 10.0 * self.sigma
+        if self.fc_options["abs_emi"] == 2:
+            E_min = self.E_0_cm - 10000
+            E_max = self.E_0_cm + 10000
+            #E_min = self.E_0_cm - fc_width - 50.0 * self.sigma
+            #E_max = self.E_0_cm + 10.0 * self.sigma
         else:
             E_min = self.E_0_cm - 5.0 * self.sigma
             E_max = self.E_0_cm + fc_width + 50.0 * self.sigma
@@ -160,7 +162,7 @@ class HRData:
         stick_evolts = numpy.array(self.stick_energies) /8065.54
 
         xlim_cm = (float(self.energy_grid.min()), float(self.energy_grid.max()))
-        xlim_nm = (float(wavelength_grid.min()), float(wavelength_grid.max()))
+        xlim_nm = (float(wavelength_grid.max()), float(wavelength_grid.min()))
         xlim_ev = (float(electronvolts_grid.min()), float(electronvolts_grid.max()))
 
         #Emission
