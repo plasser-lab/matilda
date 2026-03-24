@@ -6,8 +6,7 @@ from matilda import input_options, units, lib_fc, matilda_header, error_handler
 import os, sys
 
 """
-version 1.0.0
-author: Felix Plasser
+author: Felix Plasser, Sayan Ghosh, Giulia Woelfle-Conway
 usage: Spectrum using Franck-Condon progression formula based on Huang-Rhys factors.
 """
 
