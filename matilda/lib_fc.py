@@ -186,8 +186,8 @@ class HRData:
             #print(f"Excited state lifetime: {Lamda:.6e} ns")
             print(f"Excited state lifetime: {lifetime:.6e} ns")
 
-            write_table("vibronic_emission_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [wavenumber_grid, wavelength_grid, electronvolts_grid, self.spectrum],)
-            print("\nEmission spectrum data saved to 'vibronic_emission_data.txt'")
+            write_table("vibronic_spectrum_emi_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [wavenumber_grid, wavelength_grid, electronvolts_grid, self.spectrum],)
+            print("\nEmission spectrum data saved to 'vibronic_spectrum_emi_data.txt'")
 
             if plot_sticks:
                 write_table("vibronic_emi_stick_data.txt", "Wavenumber(cm^-1)  Wavelength(nm)   Electronvolts(eV)   Intensity(normalised)", [stick_wavenumbers, stick_wavelengths, stick_evolts, self.stick_intensities],)
@@ -197,7 +197,7 @@ class HRData:
             sticks_nm = (stick_wavelengths, stick_intensities_normalised) if plot_sticks else None
             sticks_ev = (stick_evolts, stick_intensities_normalised) if plot_sticks else None
 
-            plot_and_save(wavenumber_grid, self.spectrum, "Wavenumber (cm$^{-1}$)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum", "vibronic_emission.png", color="darkred", sticks=sticks_cm, xlim=xlim_cm,)
+            plot_and_save(wavenumber_grid, self.spectrum, "Wavenumber (cm$^{-1}$)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Wavenumber)", "vibronic_emission_rcm.png", color="darkred", sticks=sticks_cm, xlim=xlim_cm,)
             plot_and_save(wavelength_grid, self.spectrum, "Wavelength (nm)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Wavelength)", "vibronic_emission_nm.png", color="orange", sticks=sticks_nm, xlim=xlim_nm)
             plot_and_save(electronvolts_grid, self.spectrum, "Electronvolts (eV)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Electronvolts)", "vibronic_emission_ev.png", color="deeppink", sticks=sticks_ev, xlim=xlim_ev)
         
@@ -241,8 +241,8 @@ No single fixed peak formula applies.""")
                 omega_ratio = self.energy_grid / self.fc_options["dEH"]
                 epsilon_spectrum = epsilon_au * omega_ratio * self.spectrum
 
-            write_table("vibronic_spectrum_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Molar Extinction Coefficients(M^-1 cm^-1)", [wavenumber_grid, wavelength_grid, electronvolts_grid, epsilon_spectrum],)
-            print("\nAbsorption spectrum data saved to 'vibronic_spectrum_data.txt'")
+            write_table("vibronic_spectrum_abs_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Molar Extinction Coefficients(M^-1 cm^-1)", [wavenumber_grid, wavelength_grid, electronvolts_grid, epsilon_spectrum],)
+            print("\nAbsorption spectrum data saved to 'vibronic_spectrum_abs_data.txt'")
 
             if plot_sticks:
                 write_table("vibronic_abs_stick_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [stick_wavenumbers, stick_wavelengths, stick_evolts, self.stick_intensities],)
@@ -253,9 +253,9 @@ No single fixed peak formula applies.""")
             sticks_nm = (stick_wavelengths, stick_y) if plot_sticks else None
             sticks_ev = (stick_evolts, stick_y) if plot_sticks else None
 
-            plot_and_save(wavenumber_grid, epsilon_spectrum, "Wavenumber (cm$^{-1}$)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum", "vibronic_spectrum.png", color="darkgreen", sticks=sticks_cm, xlim=xlim_cm,)
-            plot_and_save(wavelength_grid, epsilon_spectrum, "Wavelength (nm)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Wavelength)", "vibronic_spectrum_nm.png", color="purple", sticks=sticks_nm, xlim=xlim_nm)
-            plot_and_save(electronvolts_grid, epsilon_spectrum, "Electronvolts (eV)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Electronvolts)", "vibronic_spectrum_ev.png", color="brown", sticks=sticks_ev, xlim=xlim_ev)
+            plot_and_save(wavenumber_grid, epsilon_spectrum, "Wavenumber (cm$^{-1}$)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Wavenumber)", "vibronic_absorption_rcm.png", color="darkgreen", sticks=sticks_cm, xlim=xlim_cm,)
+            plot_and_save(wavelength_grid, epsilon_spectrum, "Wavelength (nm)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Wavelength)", "vibronic_absorption_nm.png", color="purple", sticks=sticks_nm, xlim=xlim_nm)
+            plot_and_save(electronvolts_grid, epsilon_spectrum, "Electronvolts (eV)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Electronvolts)", "vibronic_absorption_ev.png", color="brown", sticks=sticks_ev, xlim=xlim_ev)
 
     def run_plot(self):
         self.prep()
