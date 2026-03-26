@@ -86,10 +86,10 @@ class HRData:
         fc_width = sum(S * omega for S, omega in self.FC_modes)
 
         if self.fc_options["abs_emi"] == 2:   
-            #E_min = self.E_0_cm - 10000.0
-            #E_max = self.E_0_cm + 10000.0
-            E_min = self.fc_options["dEH"] - fc_width - 50.0 * self.sigma
-            E_max = self.fc_options["dEH"] + 10.0 * self.sigma
+            E_min = self.fc_options["dEH"] - (10000.0/units.energy['rcm']) #It is 10000 cm^-1
+            E_max = self.fc_options["dEH"] + (10000.0/units.energy['rcm'])
+            #E_min = self.fc_options["dEH"] - fc_width - 50.0 * self.sigma
+            #E_max = self.fc_options["dEH"] + 10.0 * self.sigma
         else:
             E_min = self.fc_options["dEH"] - 5.0 * self.sigma
             E_max = self.fc_options["dEH"] + fc_width + 50.0 * self.sigma
@@ -173,8 +173,8 @@ class HRData:
 
         #Emission
         if self.fc_options["abs_emi"] == 2:
-            A_si = 10000 * 2 * math.pi * units.SIconstants['e']**2 / (units.SIconstants['me'] * units.SIconstants['eps0'] * units.SIconstants['c']) * self.fc_options["f"] * (self.fc_options["dEH"] * units.energy['rcm'])**2
-            Lamda = 1e9 / A_si
+            #A_si = 10000 * 2 * math.pi * units.SIconstants['e']**2 / (units.SIconstants['me'] * units.SIconstants['eps0'] * units.SIconstants['c']) * self.fc_options["f"] * (self.fc_options["dEH"] * units.energy['rcm'])**2
+            #Lamda = 1e9 / A_si
 
             ein_coeff_emi = 2 * self.fc_options["dEH"]**2 * self.fc_options["f"] / units.constants['c0']**3 / units.time['s']
             lifetime = 1e9 / ein_coeff_emi
@@ -182,10 +182,9 @@ class HRData:
             self.spectrum /= self.spectrum.max()
 
             print("\nLineshapes are ignored.")
-            #print(f"Einstein coefficient of spontaneous emission (A): {A_si:.6e} s^-1")
-
-            print(f"Excited state lifetime: {Lamda:.6e} ns")
-            print(f"Excited state lifetime au: {lifetime:.6e} ns")
+            print(f"Einstein coefficient of spontaneous emission (A): {ein_coeff_emi:.6e} s^-1")
+            #print(f"Excited state lifetime: {Lamda:.6e} ns")
+            print(f"Excited state lifetime: {lifetime:.6e} ns")
 
             write_table("vibronic_emission_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [wavenumber_grid, wavelength_grid, electronvolts_grid, self.spectrum],)
             print("\nEmission spectrum data saved to 'vibronic_emission_data.txt'")
@@ -204,17 +203,16 @@ class HRData:
         
         #Absorption
         else:
-            B_si = math.pi**2 * units.SIconstants['e']**2 / (units.SIconstants['me'] * units.SIconstants['eps0'] * units.SIconstants['c'] * units.SIconstants['h']) * self.fc_options["f"] / (self.fc_options["dEH"] / units.time['s'])
+            #B_si = math.pi**2 * units.SIconstants['e']**2 / (units.SIconstants['me'] * units.SIconstants['eps0'] * units.SIconstants['c'] * units.SIconstants['h']) * self.fc_options["f"] / (self.fc_options["dEH"] / units.time['s'])
 
             ein_coeff_abs = 2 * math.pi**2 / units.constants["c0"] * self.fc_options["f"] / self.fc_options["dEH"] * units.time['s'] / units.mass['kg']
             
             print("\nLineshapes are ignored.")
+            #print(f"Einstein coefficient of absorption (B) in SI: {B_si:.6e} s/kg")
+            print(f"Einstein coefficient of absorption (B): {ein_coeff_abs:.6e} s/kg")
 
-            print(f"Einstein coefficient of absorption (B) in SI: {B_si:.6e} s/kg")
-            print(f"Einstein coefficient of absorption (B) in au: {ein_coeff_abs:.6e} s/kg")
-
-            cross_sec_si_max = math.pi * units.SIconstants['e']**2 / (2 * units.SIconstants['me'] * units.SIconstants['eps0'] * units.SIconstants['c']) * self.fc_options["f"] / (self.sigma / units.time['s'] * (2 * math.pi)**0.5)
-            epsilon_si_max = cross_sec_si_max * units.constants['Nl'] / math.log(10)
+            #cross_sec_si_max = math.pi * units.SIconstants['e']**2 / (2 * units.SIconstants['me'] * units.SIconstants['eps0'] * units.SIconstants['c']) * self.fc_options["f"] / (self.sigma / units.time['s'] * (2 * math.pi)**0.5)
+            #epsilon_si_max = cross_sec_si_max * units.constants['Nl'] / math.log(10)
 
             cross_sec_cons_au = 2 * math.pi**2 * self.fc_options["f"] / units.constants['c0']
             epsilon_au = cross_sec_cons_au * units.constants['Nl'] / math.log(10) * 1e-3 * units.length['cm']**2
@@ -226,11 +224,11 @@ class HRData:
                 print("\nAssuming omega/omega_I0 = 1 (sharp lineshape approximation).")
                 print("The absorption cross section has uniform scaling across the spectrum.")
 
-                print(f"\nabs_cross_sec_SI: {cross_sec_si_max * 1e20:.6e} A^2")
-                print(f"max_epsilon_SI: {epsilon_si_max * 10:.6e} M^-1 cm^-1")
+                #print(f"\nabs_cross_sec_SI: {cross_sec_si_max * 1e20:.6e} A^2")
+                #print(f"max_epsilon_SI: {epsilon_si_max * 10:.6e} M^-1 cm^-1")
 
                 print(f"\nCharacteristic maximum absorption cross section: {cross_sec_cons_au_max * 1e16:.6e} A^2")
-                print(f"Characteristic maximum extinction coefficient: {epsilon_au_max:.6e} M^-1 cm^-1")
+                #print(f"Characteristic maximum extinction coefficient: {epsilon_au_max:.6e} M^-1 cm^-1")
                 epsilon_spectrum = epsilon_au * self.spectrum
 
             else:            
