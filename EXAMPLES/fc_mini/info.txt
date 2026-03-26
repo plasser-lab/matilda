@@ -20,7 +20,7 @@ fc_mini <hr_data>
 Select mode (abs_emi):
   [ 1]          1 - Absorption
   [ 2]          2 - Emission
-Choice: [1] 2
+Choice: [1] 2                 
 
 Electronic adiabatic energy in Hartree (dEH):
 Choice: [1.000000] 0.1325699476419686
@@ -29,58 +29,31 @@ Oscillator strength (f):
 Choice: [1.000000] 0.110242852
 
 Minimum vibrational frequency in cm^-1 (w_min):
-Choice: [200.000000] 250
+Choice: [200.000000] 
 
 Minimum Huang-Rhys factor value (S_min):
-Choice: [0.100000] 0.1
+Choice: [0.100000] 0.15
 
 Show stick spectrum overlay (plot_sticks):
 Choice (y/n): [n] 
 
-#######
-Choice (y/n): [n]
- 
 Number of points in spectrum (npoints):
 Choice: [2000] 
 
 Running FC simulation...
 
-Using modes with omega > 250.0000 cm^-1 and S > 0.1000 as FC-active modes.
-Number of active modes : 5
-Number of sigma modes  : 61
-Computed gaussian sigma: 155.3331 cm^-1
-The adiabatic energy is 29095.7403 cm^-1
+Using modes with omega > 200.0000 cm^-1 and S > 0.1500 as FC-active modes.
+Number of active modes : 4
+Number of sigma modes  : 62
+Computed gaussian sigma: 309.6121 cm^-1
+Adiabatic energy difference: 29095.7403 cm^-1
 
 Lineshapes are ignored.
-Einstein coefficient of spontaneous emission (A): 6.225175e+07 s^-1
-Excited state lifetime: 1.606380e+01 ns
+Einstein coefficient of spontaneous emission (A): 6.225174e+07 s^-1
+Excited state lifetime: 1.606381e+01 ns
 
-Emission spectrum data saved to 'vibronic_emission_data.txt'
-Plot saved as 'vibronic_emission.png'
-Plot saved as 'vibronic_emission_nm.png'
-Plot saved as 'vibronic_emission_ev.png'
-
-#######
-Choice (y/n): [n] y
-
-Number of points in spectrum (npoints):
-Choice: [2000] 
-
-Running FC simulation...
-
-Using modes with omega > 250.0000 cm^-1 and S > 0.1000 as FC-active modes.
-Number of active modes : 5
-Number of sigma modes  : 61
-Computed gaussian sigma: 155.3331 cm^-1
-The adiabatic energy is 29095.7403 cm^-1
-
-Lineshapes are ignored.
-Einstein coefficient of spontaneous emission (A): 6.225175e+07 s^-1
-Excited state lifetime: 1.606380e+01 ns
-
-Emission spectrum data saved to 'vibronic_emission_data.txt'
-Stick spectrum data saved to 'vibronic_emi_stick_data.txt'
-Plot saved as 'vibronic_emission.png'
+Emission spectrum data saved to 'vibronic_spectrum_emi_data.txt'
+Plot saved as 'vibronic_emission_rcm.png'
 Plot saved as 'vibronic_emission_nm.png'
 Plot saved as 'vibronic_emission_ev.png'
 
@@ -89,7 +62,7 @@ fc_mini <hr_data>
 Select mode (abs_emi):
   [ 1]          1 - Absorption
   [ 2]          2 - Emission
-Choice: [1] 1
+Choice: [1]  
 
 Electronic adiabatic energy in Hartree (dEH):
 Choice: [1.000000] 0.1325699476419686
@@ -98,10 +71,10 @@ Oscillator strength (f):
 Choice: [1.000000] 0.110242852
 
 Minimum vibrational frequency in cm^-1 (w_min):
-Choice: [200.000000] 250
+Choice: [200.000000] 
 
 Minimum Huang-Rhys factor value (S_min):
-Choice: [0.100000] 0.1
+Choice: [0.100000]
 
 Show stick spectrum overlay (plot_sticks):
 Choice (y/n): [n] 
@@ -117,45 +90,45 @@ Choice (y/n): [y]
 
 Running FC simulation...
 
-Using modes with omega > 250.0000 cm^-1 and S > 0.1000 as FC-active modes.
+Using modes with omega > 200.0000 cm^-1 and S > 0.1000 as FC-active modes.
 Number of active modes : 5
 Number of sigma modes  : 61
-Computed gaussian sigma: 155.3331 cm^-1
-The adiabatic energy is 29095.7403 cm^-1
+Computed gaussian sigma: 135.2559 cm^-1
+Adiabatic energy difference: 29095.7403 cm^-1
 
 Lineshapes are ignored.
-Einstein coefficient of absorption (B): 3.180729e+09 s g m^-1
+Einstein coefficient of absorption (B): 3.180729e+12 s/kg
 
 Assuming omega/omega_I0 = 1 (sharp lineshape approximation).
 The absorption cross section has uniform scaling across the spectrum.
 
-Characteristic peak absorption cross section: 2.506561e+00 A^2
+Characteristic maximum absorption cross section: 2.878631e+00 A^2
 
-Absorption spectrum data saved to 'vibronic_absorption_data.txt'
-Plot saved as 'vibronic_absorption.png'
-Plot saved as 'vibronic_absorption_nm.png'
-Plot saved as 'vibronic_absorption_ev.png'
+Absorption spectrum data saved to 'vibronic_spectrum_abs_data.txt'
+Plot saved as 'vibronic_spectrum_rcm.png'
+Plot saved as 'vibronic_spectrum_nm.png'
+Plot saved as 'vibronic_spectrum_ev.png'
 
 #######
 Choice (y/n): [y] n
 
 Running FC simulation...
 
-Using modes with omega > 250.0000 cm^-1 and S > 0.1000 as FC-active modes.
+Using modes with omega > 200.0000 cm^-1 and S > 0.1000 as FC-active modes.
 Number of active modes : 5
 Number of sigma modes  : 61
-Computed gaussian sigma: 155.3331 cm^-1
-The adiabatic energy is 29095.7403 cm^-1
+Computed gaussian sigma: 135.2559 cm^-1
+Adiabatic energy difference: 29095.7403 cm^-1
 
 Lineshapes are ignored.
-Einstein coefficient of absorption (B): 3.180729e+09 s gm^-1
+Einstein coefficient of absorption (B): 3.180729e+12 s/kg
 
 Including full frequency-dependent factor (omega/omega_I0).
 The absorption cross section now varies at each frequency point.
 No single fixed peak formula applies.
 
-Absorption spectrum data saved to 'vibronic_absorption_data.txt'
-Plot saved as 'vibronic_absorption.png'
-Plot saved as 'vibronic_absorption_nm.png'
-Plot saved as 'vibronic_absorption_ev.png'
+Absorption spectrum data saved to 'vibronic_spectrum_abs_data.txt'
+Plot saved as 'vibronic_spectrum_rcm.png'
+Plot saved as 'vibronic_spectrum_nm.png'
+Plot saved as 'vibronic_spectrum_ev.png'
 
