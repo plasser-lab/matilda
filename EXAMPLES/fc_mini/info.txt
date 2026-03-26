@@ -79,7 +79,7 @@ Einstein coefficient of spontaneous emission (A): 6.225175e+07 s^-1
 Excited state lifetime: 1.606380e+01 ns
 
 Emission spectrum data saved to 'vibronic_emission_data.txt'
-Stick spectrum data saved to vibronic_emi_stick_data.txt'
+Stick spectrum data saved to 'vibronic_emi_stick_data.txt'
 Plot saved as 'vibronic_emission.png'
 Plot saved as 'vibronic_emission_nm.png'
 Plot saved as 'vibronic_emission_ev.png'
@@ -124,17 +124,17 @@ Computed gaussian sigma: 155.3331 cm^-1
 The adiabatic energy is 29095.7403 cm^-1
 
 Lineshapes are ignored.
-Einstein coefficient of absorption (B): 3.180729e+09 s gm^-1
+Einstein coefficient of absorption (B): 3.180729e+09 s g m^-1
 
 Assuming omega/omega_I0 = 1 (sharp lineshape approximation).
 The absorption cross section has uniform scaling across the spectrum.
 
 Characteristic peak absorption cross section: 2.506561e+00 A^2
 
-Absorption spectrum data saved to 'vibronic_spectrum_data.txt'
-Plot saved as 'vibronic_spectrum.png'
-Plot saved as 'vibronic_spectrum_nm.png'
-Plot saved as 'vibronic_spectrum_ev.png'
+Absorption spectrum data saved to 'vibronic_absorption_data.txt'
+Plot saved as 'vibronic_absorption.png'
+Plot saved as 'vibronic_absorption_nm.png'
+Plot saved as 'vibronic_absorption_ev.png'
 
 #######
 Choice (y/n): [y] n
@@ -154,8 +154,8 @@ Including full frequency-dependent factor (omega/omega_I0).
 The absorption cross section now varies at each frequency point.
 No single fixed peak formula applies.
 
-Absorption spectrum data saved to 'vibronic_spectrum_data.txt'
-Plot saved as 'vibronic_spectrum.png'
-Plot saved as 'vibronic_spectrum_nm.png'
-Plot saved as 'vibronic_spectrum_ev.png'
+Absorption spectrum data saved to 'vibronic_absorption_data.txt'
+Plot saved as 'vibronic_absorption.png'
+Plot saved as 'vibronic_absorption_nm.png'
+Plot saved as 'vibronic_absorption_ev.png'
 

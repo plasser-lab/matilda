@@ -1,11 +1,10 @@
 """
 version 1.0.0
-author: Giulia Woelfle-Conway
+author: Sayan Ghosh, Felix Plasser, Giulia Woelfle-Conway
 usage: Routines for Franck-Condon simulations
 """
 
 import math
-from dataclasses import dataclass
 from typing import Optional
 
 import numpy
@@ -123,7 +122,7 @@ class HRData:
                 
             S, omega = self.FC_modes[idx]                                       #for current mode unpacks s and omega
             for k in range(self.k_max + 1):                                  #loops over no of quanta k in this mode from 0 up to k_max inclusive
-                new_intensity = intensity * (S**k) / math.factorial(k)  #poisson-like weight factor is multiplied by intensity accumulated so far from previous modes. updates intenisty for choosing k quanta in this mode
+                new_intensity = intensity * (S**k) / math.factorial(k)  #poisson-like weight factor is multiplied by intensity accumulated from previous modes. updates intenisty for choosing k quanta in this mode
                 if self.fc_options["abs_emi"] == 2:                                  #updates energy shift depending on emi or abs
                     new_Eshift = E_shift - k * omega
                 else:
@@ -142,15 +141,14 @@ class HRData:
                 for row in zip(*cols):
                     fh.write(" ".join(f"{float(v):15.8f}" for v in row) + "\n")
         
-        def plot_and_save(x, y, xlabel, ylabel, title, filename, color, sticks=None, xlim=None,):
+        def plot_and_save(x, y, xlabel, ylabel, title, filename, color, xlim, sticks=None,):
             plt.figure(figsize=(8, 5))
             plt.plot(x, y, color=color, label="Broadened spectrum")
+            plt.xlim(*xlim)
             if sticks is not None:
                 sx, sy = sticks
                 plt.vlines(sx, 0, sy, color="blue", linewidth=1, label="Stick spectrum")
                 plt.legend()
-            if xlim is not None:
-                plt.xlim(*xlim)
             plt.xlabel(xlabel)
             plt.ylabel(ylabel)
             plt.title(title)
@@ -195,7 +193,7 @@ class HRData:
             if plot_sticks:
                 write_table("vibronic_emi_stick_data.txt", "Wavenumber(cm^-1)  Wavelength(nm)   Electronvolts(eV)   Intensity(normalised)", [stick_wavenumbers, stick_wavelengths, stick_evolts, self.stick_intensities],)
                 print("Stick spectrum data saved to vibronic_emi_stick_data.txt'")
-            
+
             sticks_cm = (stick_wavenumbers, stick_intensities_normalised) if plot_sticks else None
             sticks_nm = (stick_wavelengths, stick_intensities_normalised) if plot_sticks else None
             sticks_ev = (stick_evolts, stick_intensities_normalised) if plot_sticks else None
@@ -211,6 +209,7 @@ class HRData:
             ein_coeff_abs = 2 * math.pi**2 / units.constants["c0"] * self.fc_options["f"] / self.fc_options["dEH"] * units.time['s'] / units.mass['kg']
             
             print("\nLineshapes are ignored.")
+
             print(f"Einstein coefficient of absorption (B) in SI: {B_si:.6e} s/kg")
             print(f"Einstein coefficient of absorption (B) in au: {ein_coeff_abs:.6e} s/kg")
 
@@ -259,7 +258,6 @@ No single fixed peak formula applies.""")
             plot_and_save(wavenumber_grid, epsilon_spectrum, "Wavenumber (cm$^{-1}$)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum", "vibronic_spectrum.png", color="darkgreen", sticks=sticks_cm, xlim=xlim_cm,)
             plot_and_save(wavelength_grid, epsilon_spectrum, "Wavelength (nm)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Wavelength)", "vibronic_spectrum_nm.png", color="purple", sticks=sticks_nm, xlim=xlim_nm)
             plot_and_save(electronvolts_grid, epsilon_spectrum, "Electronvolts (eV)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Electronvolts)", "vibronic_spectrum_ev.png", color="brown", sticks=sticks_ev, xlim=xlim_ev)
-
 
     def run_plot(self):
         self.prep()
