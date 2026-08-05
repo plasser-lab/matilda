@@ -4,7 +4,7 @@ from __future__ import print_function
 
 """
 version 1.0.0
-author: Felix Plasser
+author: Felix Plasser, Sayan Ghosh
 usage: Compute Huang-Rhys parameters and related quantities.
 """
 
@@ -28,14 +28,14 @@ def compute_huang_rhys(gs_file, es_file, vib_file, file_type="xyz"):
     es_struc.read_file(file_path=es_file, file_type=file_type)
     # TODO: Could do superposition here
 
-    diff_vec = es_struc.ret_vector() - gs_struc.ret_vector()                # delR = R_ES − R_GS
-    print("Distance: %.4f Ang" % numpy.sum(diff_vec * diff_vec) ** 0.5)     # d = sqrt(sum_i^3N (delR)^2)
+    diff_vec = es_struc.ret_vector() - gs_struc.ret_vector()
+    print("Distance: %.4f Ang" % numpy.sum(diff_vec * diff_vec) ** 0.5)
 
     M = gs_struc.ret_mass_vector(power=0.5, rep=3)  # M_i = sqrt(m_i)
     mdiff_vec = diff_vec * M
     print("MW Dist: %.5f amu**.5 Ang"%(numpy.sum(mdiff_vec*mdiff_vec))**.5)
     print("MW MDist   : %.5f Ang"%(numpy.sum(mdiff_vec*mdiff_vec)/numpy.sum(M*M))**.5)
-    mdiff_vec *= units.mass['amu']**(-.5) / units.length['A']   # Conversion to atomic units
+    mdiff_vec *= units.mass['amu']**(-.5) / units.length['A']
 
     mc = struc_linalg.mol_calc(gs_file, file_type=file_type)
     print("RMSD /3**.5: %.5f Ang"%(mc.RMSD(gs_struc, es_struc) / 3**.5))
@@ -45,7 +45,7 @@ def compute_huang_rhys(gs_file, es_file, vib_file, file_type="xyz"):
     vmol.read_molden_file(vib_file)
     Kmat = vmol.ret_vib_matrix()
 
-    freqs_cm = vmol.ret_freqs()     # Frequencies in cm^-1
+    freqs_cm = vmol.ret_freqs()             # Frequencies in cm^-1
     Om = freqs_cm / units.energy['rcm']
 
     # TODO: put this into vib_molden
@@ -56,7 +56,7 @@ def compute_huang_rhys(gs_file, es_file, vib_file, file_type="xyz"):
             mode *= norm ** (-0.5)
 
     dQ = Om ** 0.5 * numpy.dot(mdiff_vec, Kmat.T)
-    S_factors = 0.5 * dQ ** 2   # S = 1/2 * dQ^2
+    S_factors = 0.5 * dQ ** 2
 
     # Filter out zero/imaginary frequencies
     valid_indices = freqs_cm > 1E-8
@@ -121,7 +121,6 @@ if __name__ == "__main__":
 
     parser.add_argument("-t", "--filetype", default="xyz", help="Filetype of structure files (default: xyz)")
 
-    # Actions
     parser.add_argument("-s", "--topS", type=int, metavar="N", help="Show top N modes with highest Huang-Rhys factors")
     parser.add_argument("-l", "--topLambda", type=int, metavar="N", help="Show top N modes with highest reorganization energies")
     parser.add_argument("-p", "--plot", metavar="PNGFILE", help="Plot Huang-Rhys spectrum and save to file")
@@ -133,8 +132,6 @@ if __name__ == "__main__":
     else:
         vib_file = args.vib_es
         print("NOTE: You are using excited-state vibrational modes (--vib_es).")
-        # NOTE: You are using excited-state vibrational modes (vib_es).
-        # If results seem unreasonable or unphysical, consider using ground-state modes (--vib_gs) instead, especially if excited-state frequencies are less reliable in your calculations.
 
     freqs_cm, S_factors, reorg_energy_modes, mdiff_vec, Kmat, Om, gs_struc = compute_huang_rhys(
         gs_file=args.gs_file,

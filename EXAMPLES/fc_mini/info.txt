@@ -6,7 +6,6 @@ fc_mini.py hr.txt
 *** Output (including user input)
 
 **EMI**
-fc_mini <hr_data>
 ================================================================================
 |                                MATILDA (beta)                                |
 |                                                                              |
@@ -20,61 +19,84 @@ fc_mini <hr_data>
 Select mode (abs_emi):
   [ 1]          1 - Absorption
   [ 2]          2 - Emission
-Choice: [1] 2                 
+Choice: [1] 2
 
 Electronic adiabatic energy in Hartree (dEH):
-Choice: [1.000000] 0.1325699476419686
+Choice: [1.000000] 0.13
 
 Oscillator strength (f):
-Choice: [1.000000] 0.110242852
+Choice: [1.000000] 0.11
+
+Refractive index of the solvent (n_r):
+Choice: [1.000000] 
 
 Minimum vibrational frequency in cm^-1 (w_min):
 Choice: [200.000000] 
 
 Minimum Huang-Rhys factor value (S_min):
-Choice: [0.100000] 0.15
+Choice: [0.100000] 
 
 Show stick spectrum overlay (plot_sticks):
 Choice (y/n): [n] 
 
 Number of points in spectrum (npoints):
 Choice: [2000] 
+
+Nomralised Intensity (int_type):
+Choice (y/n): [y]  
+
+Assume omega/omega_I0 = 1 sharp lineshape approximation (use_omega_omegaI0):
+Choice (y/n): [y] 
 
 Running FC simulation...
 
-Using modes with omega > 200.0000 cm^-1 and S > 0.1500 as FC-active modes.
-Number of active modes : 4
-Number of sigma modes  : 62
-Computed gaussian sigma: 309.6121 cm^-1
-Adiabatic energy difference: 29095.7403 cm^-1
+Using modes with omega > 200.0000 cm^-1 and S > 0.1000 as FC-active modes.
+Number of active modes : 5
+Number of sigma modes  : 61
+Computed gaussian sigma: 199.8247 cm^-1
+Adiabatic energy difference: 28531.7020 cm^-1
 
 Lineshapes are ignored.
-Einstein coefficient of spontaneous emission (A): 6.225174e+07 s^-1
-Excited state lifetime: 1.606381e+01 ns
+Einstein coefficient of spontaneous emission (A): 5.972969e+07 s^-1
+Excited state lifetime: 1.674209e+01 ns
 
-Emission spectrum data saved to 'vibronic_spectrum_emi_data.txt'
-Plot saved as 'vibronic_emission_rcm.png'
-Plot saved as 'vibronic_emission_nm.png'
-Plot saved as 'vibronic_emission_ev.png'
+Assuming omega/omega_I0 = 1 (sharp lineshape approximation).
+
+Emission spectrum data saved to 'vibronic_spectrum_emi_normalised_data.txt'
+Plot saved as 'vibronic_emission_rcm_norm.png'
+Plot saved as 'vibronic_emission_nm_norm.png'
+Plot saved as 'vibronic_emission_ev_norm.png'
 
 ** ABS **
-fc_mini <hr_data>
+================================================================================
+|                                MATILDA (beta)                                |
+|                                                                              |
+|                            Author: Felix Plasser                             |
+|           Contributions by: U. Rehman, S. Ghosh, G. Woelfle-Conway           |
+--------------------------------------------------------------------------------
+|                      FCmini - Franck-Condon simulations                      |
+================================================================================
+
+
 Select mode (abs_emi):
   [ 1]          1 - Absorption
   [ 2]          2 - Emission
-Choice: [1]  
+Choice: [1] 
 
 Electronic adiabatic energy in Hartree (dEH):
-Choice: [1.000000] 0.1325699476419686
+Choice: [1.000000] 0.13
 
 Oscillator strength (f):
-Choice: [1.000000] 0.110242852
+Choice: [1.000000] 0.11
+
+Refractive index of the solvent (n_r):
+Choice: [1.000000] 
 
 Minimum vibrational frequency in cm^-1 (w_min):
 Choice: [200.000000] 
 
 Minimum Huang-Rhys factor value (S_min):
-Choice: [0.100000]
+Choice: [0.100000] 
 
 Show stick spectrum overlay (plot_sticks):
 Choice (y/n): [n] 
@@ -82,7 +104,10 @@ Choice (y/n): [n]
 Number of points in spectrum (npoints):
 Choice: [2000] 
 
-Assume omega/omega_I0 = 1 sharp lineshape approximation for the absorption cross-section? (use_omega_omegaI0):
+Nomralised Intensity (int_type):
+Choice (y/n): [y] n
+
+Assume omega/omega_I0 = 1 sharp lineshape approximation (use_omega_omegaI0):
 Choice (y/n): [y] 
 
 #######
@@ -93,21 +118,21 @@ Running FC simulation...
 Using modes with omega > 200.0000 cm^-1 and S > 0.1000 as FC-active modes.
 Number of active modes : 5
 Number of sigma modes  : 61
-Computed gaussian sigma: 135.2559 cm^-1
-Adiabatic energy difference: 29095.7403 cm^-1
+Computed gaussian sigma: 191.4623 cm^-1
+Adiabatic energy difference: 28531.7020 cm^-1
 
 Lineshapes are ignored.
-Einstein coefficient of absorption (B): 3.180729e+12 s/kg
+Einstein coefficient of absorption (B): 3.236463e+12 s/kg
 
 Assuming omega/omega_I0 = 1 (sharp lineshape approximation).
 The absorption cross section has uniform scaling across the spectrum.
 
-Characteristic maximum absorption cross section: 2.878631e+00 A^2
+Characteristic maximum absorption cross section: 2.029089e+00 A^2
 
 Absorption spectrum data saved to 'vibronic_spectrum_abs_data.txt'
-Plot saved as 'vibronic_spectrum_rcm.png'
-Plot saved as 'vibronic_spectrum_nm.png'
-Plot saved as 'vibronic_spectrum_ev.png'
+Plot saved as 'vibronic_absorption_rcm.png'
+Plot saved as 'vibronic_absorption_nm.png'
+Plot saved as 'vibronic_absorption_ev.png'
 
 #######
 Choice (y/n): [y] n
@@ -117,18 +142,17 @@ Running FC simulation...
 Using modes with omega > 200.0000 cm^-1 and S > 0.1000 as FC-active modes.
 Number of active modes : 5
 Number of sigma modes  : 61
-Computed gaussian sigma: 135.2559 cm^-1
-Adiabatic energy difference: 29095.7403 cm^-1
+Computed gaussian sigma: 191.4623 cm^-1
+Adiabatic energy difference: 28531.7020 cm^-1
 
 Lineshapes are ignored.
-Einstein coefficient of absorption (B): 3.180729e+12 s/kg
+Einstein coefficient of absorption (B): 3.236463e+12 s/kg
 
 Including full frequency-dependent factor (omega/omega_I0).
 The absorption cross section now varies at each frequency point.
 No single fixed peak formula applies.
 
 Absorption spectrum data saved to 'vibronic_spectrum_abs_data.txt'
-Plot saved as 'vibronic_spectrum_rcm.png'
-Plot saved as 'vibronic_spectrum_nm.png'
-Plot saved as 'vibronic_spectrum_ev.png'
-
+Plot saved as 'vibronic_absorption_rcm.png'
+Plot saved as 'vibronic_absorption_nm.png'
+Plot saved as 'vibronic_absorption_ev.png'

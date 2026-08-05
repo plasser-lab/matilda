@@ -16,13 +16,13 @@ class fc_options(input_options.write_options):
         self.choose_list("Select mode", "abs_emi", [ (1, "Absorption"), (2, "Emission")], 1)
         self.read_float("Electronic adiabatic energy in Hartree", "dEH", 1.0)
         self.read_float("Oscillator strength", "f", 1.0)
+        self.read_float("Refractive index of the solvent", "n_r", 1.0)
         self.read_float("Minimum vibrational frequency in cm^-1", "w_min", 200.0)
         self.read_float("Minimum Huang-Rhys factor value", "S_min", 0.1)
         self.read_yn("Show stick spectrum overlay", "plot_sticks", False)
         self.read_int("Number of points in spectrum", "npoints", 2000)
-    
-        if self["abs_emi"] == 1:
-            self.read_yn("Assume omega/omega_I0 = 1 sharp lineshape approximation for the absorption cross-section?", "use_omega_omegaI0", True)   
+        self.read_yn("Nomralised Intensity", "int_type", True)
+        self.read_yn("Assume omega/omega_I0 = 1 sharp lineshape approximation", "use_omega_omegaI0", True)
 
     def run_fc(self, hr_data_file):
         """
