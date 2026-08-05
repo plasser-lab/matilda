@@ -49,9 +49,6 @@ Other options: File format type (-t), Display options for top vibrational modes 
      -p PNGFILE, --plot PNGFILE
                         Plot Huang-Rhys spectrum and save to file
 
-#NOTE: You are using excited-state vibrational modes (-e). If results seem unreasonable or unphysical, consider using ground-state modes (-g) instead, 
-especially if excited-state frequencies are less reliable in your calculations.
-
 Example 
 
 .. code:: text
@@ -83,6 +80,7 @@ To define the system, the user needs to specify
 
 * Adiabatic energy in Hartree units
 * Oscillator strength
+* Refractive index of the solvent
 
 The two main input parameters that describe the operation of the code are 
 
