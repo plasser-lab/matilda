@@ -22,7 +22,7 @@ class fc_options(input_options.write_options):
         self.read_yn("Show stick spectrum overlay", "plot_sticks", False)
         self.read_int("Number of points in spectrum", "npoints", 2000)
         self.read_yn("Nomralised Intensity", "int_type", True)
-        if self.choose_list == 1:
+        if self["abs_emi"] == 1:
             self.read_yn( "Assume omega/omega_I0 = 1 sharp lineshape approximation", "use_omega_omegaI0", True )
 
     def run_fc(self, hr_data_file):
