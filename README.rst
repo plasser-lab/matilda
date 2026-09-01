@@ -11,4 +11,4 @@ Scripts for **manipulation**, comparison and conversion of molecular structures 
 * **D**\-istance measurement between two atoms
 * **A**\-ngles and torsion angles
 
-`Documentation <https://felixplasser.github.io/matilda/>`_
+`Documentation <https://plasser-lab.github.io/matilda/>`_
