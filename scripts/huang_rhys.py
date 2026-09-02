@@ -65,23 +65,23 @@ def compute_huang_rhys(gs_file, es_file, vib_file, file_type="xyz"):
     dQ = dQ[valid_indices]
     S_factors = S_factors[valid_indices]
 
-    reorg_energy_modes = S_factors * Om * units.energy['eV']
+    reorg_energy_modes = S_factors * Om * units.energy['rcm']
     reorg_energy_total = numpy.sum(reorg_energy_modes)
 
-    print("\nMode   Frequency(cm^-1)   dQ     Huang-Rhys S     Reorg_Energy (eV)")
+    print("\nMode   Frequency(cm^-1)   dQ     Huang-Rhys S     Reorg_Energy (cm^-1)")
     for i in range(len(freqs_cm)):
-        print(f"{i+1:3d}    {freqs_cm[i]:10.2f}   {dQ[i]:6.4f}   {S_factors[i]:10.6f}     {reorg_energy_modes[i]:12.6f}")
+        print(f"{i+1:3d}    {freqs_cm[i]:10.2f}   {dQ[i]:6.4f}   {S_factors[i]:10.6f}     {reorg_energy_modes[i]:12.2f}")
 
-    print(f"\nTotal Reorganization Energy: {reorg_energy_total:.6f} eV")
+    print(f"\nTotal Reorganization Energy: {reorg_energy_total:.2f} cm^-1")
 
     return freqs_cm, S_factors, reorg_energy_modes, mdiff_vec, Kmat, Om, gs_struc
 
 
 def show_top_modes(title, indices, freqs_cm, S_factors, reorg_energy_modes, N):
     print(f"\nTop {N} modes with {title}:")
-    print(f"{'Mode':>4} {'Freq (cm^-1)':>15} {'S_i':>10} {'λ_i (eV)':>12}")
+    print(f"{'Mode':>4} {'Freq (cm^-1)':>15} {'S_i':>10} {'λ_i (cm^-1)':>12}")
     for idx in indices[:N]:
-        print(f"{idx + 1:4d} {freqs_cm[idx]:15.2f} {S_factors[idx]:10.6f} {reorg_energy_modes[idx]:12.6f}")
+        print(f"{idx + 1:4d} {freqs_cm[idx]:15.2f} {S_factors[idx]:10.6f} {reorg_energy_modes[idx]:12.2f}")
     print()
 
 

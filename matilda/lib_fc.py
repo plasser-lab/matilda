@@ -127,6 +127,7 @@ class HRData:
 
         loop_over_modes(0, 0.0, prefactor)
 
+
     def plot_postrun(self, plot_sticks: bool = True):
         """
         Prints out the results and saves data files
@@ -157,7 +158,8 @@ class HRData:
         wavelength_grid = units.energy['nm'] / self.energy_grid
         electronvolts_grid = self.energy_grid * units.energy['eV']
 
-        stick_intensities_normalised = numpy.array(self.stick_intensities) / max(self.stick_intensities)
+        stick_intensities = numpy.array(self.stick_intensities)
+        stick_intensities_normalised = stick_intensities / numpy.max(stick_intensities)
 
         stick_wavenumbers = numpy.array(self.stick_energies) * units.energy['rcm']
         stick_wavelengths = units.energy['nm'] / numpy.array(self.stick_energies)
@@ -169,31 +171,26 @@ class HRData:
 
         #Emission
         if self.fc_options["abs_emi"] == 2:
-            ein_coeff_emi = 2 * self.fc_options["dEH"]**2 * self.fc_options["f"] / units.constants['c0']**3 / units.time['s'] * self.fc_options["n_r"]**3
+            ein_coeff_emi_au = 2 * self.fc_options["dEH"]**2 * self.fc_options["f"] / units.constants['c0']**3 * self.fc_options["n_r"]**3
+            ein_coeff_emi = ein_coeff_emi_au / units.time['s']
             lifetime = 1e9 / ein_coeff_emi
 
             print("\nLineshapes are ignored.")
             print(f"Einstein coefficient of spontaneous emission (A): {ein_coeff_emi:.6e} s^-1")
             print(f"Excited state lifetime: {lifetime:.6e} ns")
 
-            if self.fc_options["use_omega_omegaI0"]:
-                print("\nAssuming omega/omega_I0 = 1 (sharp lineshape approximation).")
-                emission_spectrum = ein_coeff_emi * self.spectrum
-
-            else:
-                print("Including full frequency-dependent factor.")
-                omega_ratio = (self.energy_grid / self.fc_options["dEH"])**3
-                epsilon_spectrum = ein_coeff_emi * omega_ratio * self.spectrum
+            emission_spectrum = ein_coeff_emi_au * self.spectrum
 
             if self.fc_options["int_type"]:
                 emission_spectrum /= numpy.max(emission_spectrum)
+                print("\nIntensity normalized to the range [0, 1].")
 
                 write_table("vibronic_spectrum_emi_normalised_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [wavenumber_grid, wavelength_grid, electronvolts_grid, emission_spectrum],)
-                print("\nEmission spectrum data saved to 'vibronic_spectrum_emi_normalised_data.txt'")
+                print("\nNormalised emission spectrum data saved to 'vibronic_spectrum_emi_normalised_data.txt'")
 
                 if plot_sticks:
-                    write_table("vibronic_emi_stick_data.txt", "Wavenumber(cm^-1)  Wavelength(nm)   Electronvolts(eV)   Intensity(normalised)", [stick_wavenumbers, stick_wavelengths, stick_evolts, self.stick_intensities],)
-                    print("Stick spectrum data saved to vibronic_emi_stick_data_norm.txt'")
+                    write_table("vibronic_emi_stick_data_norm.txt", "Wavenumber(cm^-1)  Wavelength(nm)   Electronvolts(eV)   Intensity(normalised)", [stick_wavenumbers, stick_wavelengths, stick_evolts, stick_intensities_normalised],)
+                    print("Normalised emission stick spectrum data saved to vibronic_emi_stick_data_norm.txt'")
 
                 sticks_rcm = (stick_wavenumbers, stick_intensities_normalised) if plot_sticks else None
                 sticks_nm = (stick_wavelengths, stick_intensities_normalised) if plot_sticks else None
@@ -204,23 +201,23 @@ class HRData:
                 plot_and_save(electronvolts_grid, emission_spectrum, "Electronvolts (eV)", "Normalised Intensity", "Simulated Vibronic Emission Spectrum (Electronvolts)", "vibronic_emission_ev_norm.png", color="deeppink", sticks=sticks_ev, xlim=xlim_ev)
 
             else:
-                write_table("vibronic_spectrum_emi_rcm.txt", "Wavenumber(cm^-1) Radiative decay rate(s^-1 cm)", [wavenumber_grid, emission_spectrum/units.energy['rcm']],)
-                write_table("vibronic_spectrum_emi_nm.txt", "Wavelength(nm) Radiative decay rate(s^-1 nm^-1)", [wavelength_grid, emission_spectrum/units.energy['nm']],)
-                write_table("vibronic_spectrum_emi_nm.txt", "Electronvolts(eV) Radiative decay rate(s^-1 eV^-1)", [electronvolts_grid, emission_spectrum/units.energy['eV']],)
-                print("\nEmission spectrum data saved to 'vibronic_spectrum_emi.txt' in cm^-1, nm and eV")
+                stick_rates = ein_coeff_emi_au * numpy.array(stick_intensities)  # Physical radiative rate associated with each vibronic transition
+                stick_rate_density_au = stick_rates / (self.sigma * numpy.sqrt(2 * numpy.pi)) # Peak of the Gaussian representing each individual transition
+
+                write_table("vibronic_spectrum_emi_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Radiative decay rate", [wavenumber_grid, wavelength_grid, electronvolts_grid, emission_spectrum],)
+                print("\nEmission spectrum data saved to 'vibronic_spectrum_emi_data.txt'")
 
                 if plot_sticks:
-                    write_table("vibronic_emi_stick_data.txt", "Wavenumber(cm^-1)  Wavelength(nm)   Electronvolts(eV)   Intensity(normalised)", [stick_wavenumbers, stick_wavelengths, stick_evolts, self.stick_intensities],)
-                    print("Stick spectrum data saved to vibronic_emi_stick_data.txt'")
+                    write_table("vibronic_spectrum_emi_stick_data.txt", "Wavenumber(cm^-1)  Wavelength(nm)  Electronvolts(eV)  Radiative rate density", [stick_wavenumbers, stick_wavelengths, stick_evolts, stick_rate_density_au],)
+                    print("Emisssion stick spectrum data saved to 'vibronic_spectrum_emi_stick_data.txt'")
 
-                stick_y = numpy.array(stick_intensities_normalised) * numpy.max(emission_spectrum)
-                sticks_rcm = (stick_wavenumbers, stick_y/units.energy['rcm']) if plot_sticks else None
-                sticks_nm = (stick_wavelengths, stick_y/units.energy['nm']) if plot_sticks else None
-                sticks_ev = (stick_evolts, stick_y/units.energy['eV']) if plot_sticks else None
+                sticks_rcm = (stick_wavenumbers, stick_rate_density_au) if plot_sticks else None
+                sticks_nm = (stick_wavelengths, stick_rate_density_au) if plot_sticks else None
+                sticks_ev = (stick_evolts, stick_rate_density_au) if plot_sticks else None
 
-                plot_and_save(wavenumber_grid, emission_spectrum/units.energy['rcm'], "Wavenumber (cm$^{-1}$)", "Radiative rate density (s$^{-1}$ cm)", "Simulated Vibronic Emission Spectrum (Wavenumber)", "vibronic_emission_rcm.png", color="darkred", sticks=sticks_rcm, xlim=xlim_rcm)
-                plot_and_save(wavelength_grid, emission_spectrum/units.energy['nm'], "Wavenumber (nm)", "Radiative rate density (s$^{-1}$ nm$^{-1}$)", "Simulated Vibronic Emission Spectrum (Wavelength)", "vibronic_emission_nm.png", color="orange", sticks=sticks_nm, xlim=xlim_nm)
-                plot_and_save(electronvolts_grid, emission_spectrum/units.energy['eV'], "Electronvolts (eV)", "Radiative rate density (s$^{-1}$ eV$^{-1}$)", "Simulated Vibronic Emission Spectrum (Electronvolts)", "vibronic_emission_ev.png", color="deeppink", sticks=sticks_ev, xlim=xlim_ev)
+                plot_and_save(wavenumber_grid, emission_spectrum, "Wavenumber (cm$^{-1}$)", "Radiative rate density", "Simulated Vibronic Emission Spectrum (Wavenumber)", "vibronic_emission_rcm.png", color="darkred", sticks=sticks_rcm, xlim=xlim_rcm)
+                plot_and_save(wavelength_grid, emission_spectrum, "Wavenumber (nm)", "Radiative rate density", "Simulated Vibronic Emission Spectrum (Wavelength)", "vibronic_emission_nm.png", color="orange", sticks=sticks_nm, xlim=xlim_nm)
+                plot_and_save(electronvolts_grid, emission_spectrum, "Electronvolts (eV)", "Radiative rate density", "Simulated Vibronic Emission Spectrum (Electronvolts)", "vibronic_emission_ev.png", color="deeppink", sticks=sticks_ev, xlim=xlim_ev)
 
         #Absorption
         else:
@@ -229,18 +226,18 @@ class HRData:
             print("\nLineshapes are ignored.")
             print(f"Einstein coefficient of absorption (B): {ein_coeff_abs:.6e} s/kg")
 
-            cross_sec_cons_au = 2 * math.pi**2 * self.fc_options["f"] / units.constants['c0'] / self.fc_options["n_r"]
-            epsilon_au = cross_sec_cons_au * units.constants['Nl'] / math.log(10) * 1e-3 * units.length['cm']**2
+            cross_sec_cons_au = 2 * math.pi**2 * self.fc_options["f"] / units.constants['c0'] * self.fc_options["n_r"]
+            epsilon = cross_sec_cons_au * units.constants['Nl'] / math.log(10) * 1e-3 * units.length['cm']**2
 
             cross_sec_cons_au_max = cross_sec_cons_au / (self.sigma * (2 * math.pi)**0.5) * units.length['cm']**2
-            epsilon_au_max = cross_sec_cons_au_max * 1e-3 * units.constants['Nl'] / math.log(10)
+            epsilon_max = cross_sec_cons_au_max * 1e-3 * units.constants['Nl'] / math.log(10)
 
             if self.fc_options["use_omega_omegaI0"]:
                 print("\nAssuming omega/omega_I0 = 1 (sharp lineshape approximation).")
                 print("The absorption cross section has uniform scaling across the spectrum.")
 
                 print(f"\nCharacteristic maximum absorption cross section: {cross_sec_cons_au_max * 1e16:.6e} A^2")
-                epsilon_spectrum = epsilon_au * self.spectrum
+                epsilon_spectrum = epsilon * self.spectrum
 
             else:            
 
@@ -250,7 +247,10 @@ The absorption cross section now varies at each frequency point.
 No single fixed peak formula applies.""")
 
                 omega_ratio = self.energy_grid / self.fc_options["dEH"]
-                epsilon_spectrum = epsilon_au * omega_ratio * self.spectrum
+                epsilon_spectrum = epsilon * omega_ratio * self.spectrum
+
+            stick_epsilon = epsilon * numpy.array(stick_intensities)
+            stick_epsilon_density = stick_epsilon / (self.sigma * numpy.sqrt(2 * numpy.pi))
 
             if self.fc_options["int_type"]:
                 epsilon_spectrum /= numpy.max(epsilon_spectrum)
@@ -260,8 +260,8 @@ No single fixed peak formula applies.""")
                 print("Normalized absorption spectrum data saved to 'vibronic_spectrum_abs_normalized_data.txt'")
 
                 if plot_sticks:
-                    write_table("vibronic_abs_stick_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [stick_wavenumbers, stick_wavelengths, stick_evolts, self.stick_intensities],)
-                    print("Stick spectrum data saved to 'vibronic_abs_stick_data.txt'")
+                    write_table("vibronic_abs_stick_data_norm.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [stick_wavenumbers, stick_wavelengths, stick_evolts, stick_intensities_normalised],)
+                    print("Normalised absorption stick spectrum data saved to 'vibronic_abs_stick_data_norm.txt'")
 
                 sticks_rcm = (stick_wavenumbers, stick_intensities_normalised) if plot_sticks else None
                 sticks_nm = (stick_wavelengths, stick_intensities_normalised) if plot_sticks else None
@@ -276,13 +276,12 @@ No single fixed peak formula applies.""")
                 print("\nAbsorption spectrum data saved to 'vibronic_spectrum_abs_data.txt'")
 
                 if plot_sticks:
-                    write_table("vibronic_abs_stick_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Intensity(normalised)", [stick_wavenumbers, stick_wavelengths, stick_evolts, self.stick_intensities],)
-                    print("Stick spectrum data saved to 'vibronic_abs_stick_data.txt'")
+                    write_table("vibronic_abs_stick_data.txt", "Wavenumber(cm^-1)   Wavelength(nm)  Electronvolts(eV)   Molar Extinction Coefficient(M^-1 cm^-1)", [stick_wavenumbers, stick_wavelengths, stick_evolts, stick_epsilon_density],)
+                    print("Absorption stick spectrum data saved to 'vibronic_abs_stick_data.txt'")
 
-                stick_y = numpy.array(stick_intensities_normalised) * numpy.max(epsilon_spectrum)
-                sticks_rcm = (stick_wavenumbers, stick_y) if plot_sticks else None
-                sticks_nm = (stick_wavelengths, stick_y) if plot_sticks else None
-                sticks_ev = (stick_evolts, stick_y) if plot_sticks else None
+                sticks_rcm = (stick_wavenumbers, stick_epsilon_density) if plot_sticks else None
+                sticks_nm = (stick_wavelengths, stick_epsilon_density) if plot_sticks else None
+                sticks_ev = (stick_evolts, stick_epsilon_density) if plot_sticks else None
 
                 plot_and_save(wavenumber_grid, epsilon_spectrum, "Wavenumber (cm$^{-1}$)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Wavenumber)", "vibronic_absorption_rcm.png", color="darkgreen", sticks=sticks_rcm, xlim=xlim_rcm)
                 plot_and_save(wavelength_grid, epsilon_spectrum, "Wavelength (nm)", "Molar Extinction Coefficient (M$^{-1}$ cm$^{-1}$)", "Simulated Vibronic Absorption Spectrum (Wavelength)", "vibronic_absorption_nm.png", color="purple", sticks=sticks_nm, xlim=xlim_nm)

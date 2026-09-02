@@ -45,9 +45,6 @@ Choice: [2000]
 Nomralised Intensity (int_type):
 Choice (y/n): [y]  
 
-Assume omega/omega_I0 = 1 sharp lineshape approximation (use_omega_omegaI0):
-Choice (y/n): [y] 
-
 Running FC simulation...
 
 Using modes with omega > 200.0000 cm^-1 and S > 0.1000 as FC-active modes.
@@ -60,9 +57,9 @@ Lineshapes are ignored.
 Einstein coefficient of spontaneous emission (A): 5.972969e+07 s^-1
 Excited state lifetime: 1.674209e+01 ns
 
-Assuming omega/omega_I0 = 1 (sharp lineshape approximation).
+Intensity normalized to the range [0, 1].
 
-Emission spectrum data saved to 'vibronic_spectrum_emi_normalised_data.txt'
+Normalised emission spectrum data saved to 'vibronic_spectrum_emi_normalised_data.txt'
 Plot saved as 'vibronic_emission_rcm_norm.png'
 Plot saved as 'vibronic_emission_nm_norm.png'
 Plot saved as 'vibronic_emission_ev_norm.png'
