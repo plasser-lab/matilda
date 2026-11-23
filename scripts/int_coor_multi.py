@@ -6,13 +6,15 @@ author: Felix Plasser
 usage: Print out the value of a specified internal coordinate.
 """
 import argparse
-import numpy ,sys
+import sys
 from openbabel import pybel
-from matilda import file_handler, struc_linalg
+from matilda import matilda_header, file_handler, struc_linalg
+
+matilda_header.print_header('Evaluation of internal coordinates')
 
 parser = argparse.ArgumentParser(
     prog='int_coor_multi.py',
-    description='Outputs the value of the speciefied internal coordinate'
+    description='Outputs the value of the specified internal coordinate'
 )
 parser.add_argument('-f', '--filename', nargs = '+')
 parser.add_argument('--filetype', default = 'xyz')
@@ -28,13 +30,6 @@ tors = args.tors
 files = args.filename
 file_type = args.filetype
 digits = args.digits # output digits
-
-def print_info():
-    print('Usage example: int_coor_multi.py dist 4 5 struc.xyz')
-    print('Supported internal coordinates: dist, bend, tors')
-    print('Arguments: -type <xyz, tmol, mol ...>')
-    print('   -dig <number of digits in print out>')
-    sys.exit()
 
 coors = []
 if args.dist:

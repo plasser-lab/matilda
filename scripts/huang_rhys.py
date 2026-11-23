@@ -13,6 +13,7 @@ import math
 import numpy
 import argparse
 
+from matilda import matilda_header
 from matilda import vib_molden
 from matilda import struc_linalg
 from matilda import units
@@ -38,7 +39,7 @@ def compute_huang_rhys(gs_file, es_file, vib_file, file_type="xyz"):
     mdiff_vec *= units.mass['amu']**(-.5) / units.length['A']
 
     mc = struc_linalg.mol_calc(gs_file, file_type=file_type)
-    print("RMSD /3**.5: %.5f Ang"%(mc.RMSD(gs_struc, es_struc) / 3**.5))
+    print("RMSD/3**.5 : %.5f Ang"%(mc.RMSD(gs_struc, es_struc) / 3**.5))
 
     # Vibrational info
     vmol = vib_molden.vib_molden()
@@ -68,9 +69,9 @@ def compute_huang_rhys(gs_file, es_file, vib_file, file_type="xyz"):
     reorg_energy_modes = S_factors * Om * units.energy['rcm']
     reorg_energy_total = numpy.sum(reorg_energy_modes)
 
-    print("\nMode   Frequency(cm^-1)   dQ     Huang-Rhys S     Reorg_Energy (cm^-1)")
+    print("\nMode   Freq(cm^-1)   dQ     Huang-Rhys S     Reorg. energy(cm^-1)")
     for i in range(len(freqs_cm)):
-        print(f"{i+1:3d}    {freqs_cm[i]:10.2f}   {dQ[i]:6.4f}   {S_factors[i]:10.6f}     {reorg_energy_modes[i]:12.2f}")
+        print(f"{i+1:3d}    {freqs_cm[i]:10.2f}   {dQ[i]:7.4f}   {S_factors[i]:10.6f}     {reorg_energy_modes[i]:12.2f}")
 
     print(f"\nTotal Reorganization Energy: {reorg_energy_total:.2f} cm^-1")
 
@@ -78,8 +79,8 @@ def compute_huang_rhys(gs_file, es_file, vib_file, file_type="xyz"):
 
 
 def show_top_modes(title, indices, freqs_cm, S_factors, reorg_energy_modes, N):
-    print(f"\nTop {N} modes with {title}:")
-    print(f"{'Mode':>4} {'Freq (cm^-1)':>15} {'S_i':>10} {'λ_i (cm^-1)':>12}")
+    print(f"\nTop {N} modes with {title}:\n")
+    print(f"{'Mode':>4} {'Freq(cm^-1)':>15} {'S_i':>10} {'λ_i(cm^-1)':>12}")
     for idx in indices[:N]:
         print(f"{idx + 1:4d} {freqs_cm[idx]:15.2f} {S_factors[idx]:10.6f} {reorg_energy_modes[idx]:12.2f}")
     print()
@@ -108,6 +109,8 @@ def save_data(freqs_cm, S_factors, outfile):
 
 
 if __name__ == "__main__":
+    matilda_header.print_header('Huang-Rhys parameters and reorganization energies')
+
     parser = argparse.ArgumentParser(
         prog="huang_rhys.py",
         description="Compute Huang-Rhys parameters and reorganization energies."
@@ -142,11 +145,11 @@ if __name__ == "__main__":
 
     if args.topS:
         top_indices = numpy.argsort(S_factors)[-args.topS:][::-1]
-        show_top_modes("highest Huang-Rhys factors", top_indices, freqs_cm, S_factors, reorg_energy_modes, args.topS)
+        show_top_modes("highest Huang-Rhys factors (S_i)", top_indices, freqs_cm, S_factors, reorg_energy_modes, args.topS)
 
     if args.topLambda:
         top_reorg_indices = numpy.argsort(reorg_energy_modes)[-args.topLambda:][::-1]
-        show_top_modes("highest reorganization energies", top_reorg_indices, freqs_cm, S_factors, reorg_energy_modes, args.topLambda)
+        show_top_modes("highest reorganization energies (λ_i)", top_reorg_indices, freqs_cm, S_factors, reorg_energy_modes, args.topLambda)
 
     if args.plot:
         plot_spectrum(freqs_cm, S_factors, args.plot)
