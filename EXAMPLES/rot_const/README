@@ -1,3 +1,5 @@
+# Computation of rotational constants
+
 > rot_const.py -f 1orca.xyz 2orca.xyz 3orca.xyz 4orca.xyz
 
 ---
