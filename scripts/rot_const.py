@@ -2,7 +2,9 @@
 
 import numpy as np 
 import argparse
-from matilda import struc_linalg,units
+from matilda import matilda_header,struc_linalg,units
+
+matilda_header.print_header('Geometries of lanthanide complexes')
 
 parser = argparse.ArgumentParser(prog = 'rot_const',
                                 description = 'Computes rotational constants (in MHz) of the molecule from geometry')
@@ -22,8 +24,7 @@ def rot_constant(filename):
 
     eigenvalues,_ = np.linalg.eigh(I)
 
-    h = units.constants['h']
-    rot_const_MHz = h/(8 * np.pi**2 * eigenvalues * 1e6)
+    rot_const_MHz = units.constants['h'] / (8 * np.pi**2 * eigenvalues * 1e6)
     print("Rotational constants in MHz :", " ".join(f"{i:12.6f}" for i in rot_const_MHz))
 for eachfile in filename:
     rot_constant(eachfile)

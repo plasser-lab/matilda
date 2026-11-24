@@ -1,0 +1,30 @@
+# Huang Rhys analysis for CH2
+
+*** Command
+huang_rhys.py GS.xyz ES_S1.xyz -g orca.out.molden -s 2 -l 2 -p hr.png
+
+*** Output
+Distance: 0.4088 Ang
+MW Dist: 0.96977 amu**.5 Ang
+MW MDist   : 0.14956 Ang
+RMSD/3**.5 : 0.14956 Ang
+
+Mode   Freq(cm^-1)   dQ     Huang-Rhys S     Reorg. energy(cm^-1)
+  1       1383.71   -3.6246     6.568788          9089.30
+  2       2933.91    1.1283     0.636480          1867.38
+  3       3009.17   -0.0000     0.000000             0.00
+
+Total Reorganization Energy: 10956.67 cm^-1
+
+Top 2 modes with highest Huang-Rhys factors (S_i):
+
+Mode     Freq(cm^-1)        S_i   λ_i(cm^-1)
+   1         1383.71   6.568788      9089.30
+   2         2933.91   0.636480      1867.38
+
+
+Top 2 modes with highest reorganization energies (λ_i):
+
+Mode     Freq(cm^-1)        S_i   λ_i(cm^-1)
+   1         1383.71   6.568788      9089.30
+   2         2933.91   0.636480      1867.38

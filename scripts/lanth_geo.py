@@ -4,9 +4,9 @@
 This script calculates distances, and torsion angles to decide
 if the given structure is SAP, borderline or tSAP.
 """
-import sys
 import argparse
 from openbabel import openbabel
+from matilda import matilda_header
 from matilda import struc_linalg
 
 def dist_print(struc, i, j):
@@ -25,6 +25,8 @@ def tors_print(struc, a, b, c, d):
     return tors
 
 if __name__=='__main__':
+    matilda_header.print_header('Geometries of lanthanide complexes')
+
     parser = argparse.ArgumentParser(
                          prog='lanth_geo.py',
                          description='Determine SAP or tSAP geomtry for lanthanide complex')
@@ -97,7 +99,7 @@ if __name__=='__main__':
         elif 35 > abs(average_tors) > 25:
             print("The complex is borderline (SAP/tSAP)")
         elif abs(average_tors) <= 25 :
-            print("The complex is lassified as tSAP")
+            print("The complex is classified as tSAP")
         else:
             print("Geometry not defined")
         print()
