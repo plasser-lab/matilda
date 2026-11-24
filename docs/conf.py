@@ -18,11 +18,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'MATILDA'
-copyright = '2025, Felix Plasser'
+copyright = '2026, Felix Plasser'
 author = 'Felix Plasser'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = '1.0'
 
 
 # -- General configuration ---------------------------------------------------
