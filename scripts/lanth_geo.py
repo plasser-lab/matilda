@@ -99,7 +99,7 @@ if __name__=='__main__':
         elif 35 > abs(average_tors) > 25:
             print("The complex is borderline (SAP/tSAP)")
         elif abs(average_tors) <= 25 :
-            print("The complex is lassified as tSAP")
+            print("The complex is classified as tSAP")
         else:
             print("Geometry not defined")
         print()
