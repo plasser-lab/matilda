@@ -6,8 +6,10 @@ The installation requires a few simple steps and works on most Linux or Mac syst
 Download and extract the source file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can download the code from the code directly from
+You can download the code directly from
 `github <https://github.com/felixplasser/matilda>`_.
+
+Use the latest release or the current development version.
 
 Setup the path specification
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
