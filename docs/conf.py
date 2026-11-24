@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'MATILDA'
-copyright = '2026, Felix Plasser'
-author = 'Felix Plasser'
+copyright = '2026, F. Plasser, S. Ghosh, U. Rehman, G. Woelfle-Conway'
+author = 'F. Plasser, S. Ghosh, U. Rehman, G. Woelfle-Conway'
 
 # The full version, including alpha/beta/rc tags
 release = '1.0'
