@@ -6,9 +6,12 @@ author: Felix Plasser
 usage: Add a multiple of a normal mode to a structure.
 """
 
-import os, sys
+import sys
+from matilda import matilda_header
 from matilda import vib_molden # from nma
 from matilda import struc_linalg
+
+matilda_header.print_header('Normal mode displacement')
 
 if len(sys.argv) < 6:
    print('At least 5 arguments required.')

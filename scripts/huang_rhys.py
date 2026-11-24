@@ -8,8 +8,6 @@ author: Felix Plasser, Sayan Ghosh
 usage: Compute Huang-Rhys parameters and related quantities.
 """
 
-import os, sys
-import math
 import numpy
 import argparse
 
