@@ -3,10 +3,13 @@
 """
 version 1.0.0
 author: Felix Plasser
-usage: Print out a table with distances between structures. They are superimposed onto the first structure.
+usage: Print out a table with distances between structures.
+They are superimposed onto the first structure.
 """
-import os, sys
-from matilda import struc_linalg
+import sys
+from matilda import struc_linalg, matilda_header
+
+matilda_header.print_header('Print out a table with distances between structures')
 
 if len(sys.argv) < 2:
    print('At least one argument required.')

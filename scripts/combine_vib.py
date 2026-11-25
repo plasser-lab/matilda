@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-print("""
+"""
 version 1.0.0
 author: Felix Plasser (felix.plasser@univie.ac.at)
  University of Vienna, Institute for Theoretical Chemistry
  Waehringerstr. 17, 1090, Vienna, Austria
 
 usage: Insert one ore more structure files into a template and optionally combine the vibrations.
-""")
+"""
+
 # todo: more solid handling of sigma bond rotations
 try:
     import numpy
@@ -17,7 +18,7 @@ except:
     raise
 
 try:
-    from matilda import file_handler, struc_linalg, superposition, vib_molden
+    from matilda import file_handler, struc_linalg, superposition, vib_molden, matilda_header
 except:
     print("Error in importing module of this distribution")
     print("check the PYTHONPATH environment variable")
@@ -191,6 +192,8 @@ class molecule:
 
 
 if __name__=='__main__':
+    matilda_header.print_header('Insert structure files into a template')
+
     ky_file = file_handler.ky_file(file_name="combine_vib.in")
     tmpyn = ky_file.def_input("Include vibrations? (y/n)")
     if tmpyn == "y":
@@ -206,7 +209,7 @@ if __name__=='__main__':
     num_ins = int(ky_file.def_input("How many molecules do you want to insert?"))
     
     # loop
-    for i in xrange(1,num_ins+1):
+    for i in range(1,num_ins+1):
         ins_file = ky_file.def_input("Structure-file of the molecule to insert")
         ins_typ = ky_file.def_input("File type", "xyz")
         if vib:

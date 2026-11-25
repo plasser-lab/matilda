@@ -8,11 +8,14 @@ usage: Superimpose structures <struc1>, <struc2>, ... onto <ref_struc>.
     Syntax: python superimpose.py <ref_struc> <struc1> <struc2> ... -t<type>
 """
 
-import os, sys
-from matilda import struc_linalg
+import sys
+from matilda import struc_linalg, matilda_header
+
+matilda_header.print_header('Superimpose structures')
 
 if len(sys.argv) < 3:
-   print('At least two arguments required.')
+   print('usage: Superimpose structures <struc1>, <struc2>, ... onto <ref_struc>.')
+   print('At least two arguments required.\n')
    print('Syntax: python superimpose.py <ref_struc> <struc1> <struc2> ... [-t<type=xyz>] [-mwp<mass_weight_power=1>]')
    sys.exit()
 
